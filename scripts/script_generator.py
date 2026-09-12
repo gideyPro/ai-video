@@ -42,13 +42,13 @@ Available templates:
 - title: Title screen with title and optional subtitle
 - comparison: Side-by-side comparison with left/right data
 - image_text: Image with text overlay, layout "left" or "right"
-- statistics: Animated bar chart with items array [{label, value, max, unit, color}]
+- statistics: Animated bar chart with items array [{{label, value, max, unit, color}}]
 - fact: Single fact with number and text
 - side_by_side: Two content panels
-- ranking: Ranked list with items array [{name, detail}]
+- ranking: Ranked list with items array [{{name, detail}}]
 - conclusion: Final screen with title and text
 - chapter_title: Chapter/section divider with number and title
-- timeline: Timeline with events array [{year, description}]
+- timeline: Timeline with events array [{{year, description}}]
 
 Available animations: fadeIn, fadeOut, slideInLeft, slideInRight, slideUp, slideDown, zoomIn, zoomOut, scale, none
 
@@ -184,12 +184,12 @@ def generate_script(topic, duration=60, config=None, output_path=None):
 
     if not response_text:
         print("Failed to generate script from AI. Using fallback template.", file=sys.stderr)
-        return generate_fallback_script(topic, duration, config)
-
-    scene_data = extract_json(response_text)
-    if not scene_data:
-        print("Failed to parse AI response as JSON. Using fallback.", file=sys.stderr)
-        return generate_fallback_script(topic, duration, config)
+        scene_data = generate_fallback_script(topic, duration, config)
+    else:
+        scene_data = extract_json(response_text)
+        if not scene_data:
+            print("Failed to parse AI response as JSON. Using fallback.", file=sys.stderr)
+            scene_data = generate_fallback_script(topic, duration, config)
 
     if output_path:
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)

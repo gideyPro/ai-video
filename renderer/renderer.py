@@ -152,7 +152,18 @@ def frames_to_video(frame_paths, output_path, fps, audio_path=None):
     ]
 
     if audio_path and os.path.exists(audio_path):
-        cmd.extend(["-i", audio_path, "-c:a", "aac", "-b:a", "128k", "-shortest"])
+        # Insert audio input before video options
+        cmd = [
+            "ffmpeg", "-y",
+            "-f", "concat", "-safe", "0", "-i", list_file,
+            "-i", audio_path,
+            "-c:v", "libx264",
+            "-pix_fmt", "yuv420p",
+            "-r", str(fps),
+            "-preset", "ultrafast",
+            "-crf", "28",
+            "-c:a", "aac", "-b:a", "128k"
+        ]
 
     cmd.append(output_path)
 
@@ -168,7 +179,7 @@ def frames_to_video(frame_paths, output_path, fps, audio_path=None):
     return True
 
 
-def validate_and_render(scene_data, output_path, project_dir=None, config=None):
+def validate_and_render(scene_data, output_path, project_dir=None, config=None, explicit_audio_path=None):
     is_valid, errors = validate_scene_json(scene_data, project_dir)
     if not is_valid:
         print("Validation errors:")
@@ -197,11 +208,14 @@ def validate_and_render(scene_data, output_path, project_dir=None, config=None):
         all_frames.extend(frames)
 
     audio_path = None
-    for candidate in ["narration.mp3", "narration.wav", "audio.mp3", "audio.wav"]:
-        p = os.path.join(project_dir, candidate) if project_dir else candidate
-        if os.path.exists(p):
-            audio_path = p
-            break
+    if explicit_audio_path and os.path.exists(explicit_audio_path):
+        audio_path = explicit_audio_path
+    else:
+        for candidate in ["narration.mp3", "narration.wav", "audio.mp3", "audio.wav"]:
+            p = os.path.join(project_dir, candidate) if project_dir else candidate
+            if os.path.exists(p):
+                audio_path = p
+                break
 
     success = frames_to_video(all_frames, output_path, fps, audio_path)
     return success
@@ -212,6 +226,7 @@ def main():
     parser.add_argument("scene_json", help="Path to scene JSON file")
     parser.add_argument("-o", "--output", default=None, help="Output MP4 path")
     parser.add_argument("-c", "--config", default=None, help="Config file path")
+    parser.add_argument("-a", "--audio", default=None, help="Audio file path")
     parser.add_argument("--validate-only", action="store_true", help="Only validate the scene JSON")
     args = parser.parse_args()
 
@@ -240,7 +255,7 @@ def main():
     project_dir = os.path.dirname(os.path.abspath(args.scene_json))
     config = load_config(args.config)
 
-    success = validate_and_render(scene_data, os.path.abspath(output_path), project_dir, config)
+    success = validate_and_render(scene_data, os.path.abspath(output_path), project_dir, config, explicit_audio_path=args.audio)
     sys.exit(0 if success else 1)
 
 

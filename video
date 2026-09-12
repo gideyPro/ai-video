@@ -92,11 +92,13 @@ echo ""
 # Check Python modules
 echo "Checking Python modules:"
 python3 -c "from PIL import Image, ImageDraw, ImageFont; print('[OK] Pillow')" 2>/dev/null || { echo "[MISSING] Pillow - install with: pip install Pillow"; MISSING_DEPS=1; }
+python3 -c "import edge_tts; print('[OK] edge-tts')" 2>/dev/null || { echo "[MISSING] edge-tts - install with: pip install edge-tts"; MISSING_DEPS=1; }
+python3 -c "import pydub; print('[OK] pydub')" 2>/dev/null || { echo "[MISSING] pydub - install with: pip install pydub"; MISSING_DEPS=1; }
 echo ""
 
 if [[ $MISSING_DEPS -eq 1 ]]; then
     echo "Some dependencies are missing. Attempting to install..."
-    pip3 install Pillow 2>/dev/null || true
+    pip3 install Pillow edge-tts pydub 2>/dev/null || true
 fi
 
 echo "Starting pipeline..."
@@ -164,14 +166,21 @@ echo "Step 2: Validating scene JSON..."
 python3 "$PROJECT_DIR/renderer/validate.py" "$SCENE_FILE"
 echo ""
 
-# Step 3: Render
-echo "Step 3: Rendering video..."
+# Step 3: Generate Audio
+AUDIO_OUTPUT="$PROJECT_DIR/output/${SLUG}.mp3"
+mkdir -p "$(dirname "$AUDIO_OUTPUT")"
+echo "Step 3: Generating voiceover audio..."
+python3 "$PROJECT_DIR/scripts/tts_generator.py" "$SCENE_FILE" "$AUDIO_OUTPUT"
+echo ""
+
+# Step 4: Render
+echo "Step 4: Rendering video..."
 if [[ -z "$OUTPUT" ]]; then
     OUTPUT="$PROJECT_DIR/output/${SLUG}.mp4"
 fi
 mkdir -p "$(dirname "$OUTPUT")"
 
-python3 "$PROJECT_DIR/renderer/renderer.py" "$SCENE_FILE" -o "$OUTPUT" ${CONFIG_FILE:+-c "$CONFIG_FILE"}
+python3 "$PROJECT_DIR/renderer/renderer.py" "$SCENE_FILE" -o "$OUTPUT" -a "$AUDIO_OUTPUT" ${CONFIG_FILE:+-c "$CONFIG_FILE"}
 
 echo ""
 echo "=== Complete ==="
