@@ -1,0 +1,25 @@
+{
+  "provider": "ollama",
+  "model": "llama3.2",
+  "api_key_env": "AI_API_KEY",
+  "default_duration": 60,
+  "resolution": {
+    "width": 1920,
+    "height": 1080
+  },
+  "fps": 30,
+  "visual_style": "modern_dark",
+  "font_family": "DejaVuSans",
+  "font_bold": "DejaVuSans-Bold",
+  "colors": {
+    "background": "#0a0a0a",
+    "primary": "#4fc3f7",
+    "secondary": "#ff7043",
+    "accent": "#66bb6a",
+    "text": "#ffffff",
+    "text_dim": "#aaaaaa",
+    "card_bg": "#1a1a2e",
+    "gradient_start": "#0f0c29",
+    "gradient_end": "#302b63"
+  }
+}

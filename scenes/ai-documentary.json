@@ -1,0 +1,339 @@
+{
+  "video": {
+    "title": "Artificial Intelligence: The Complete Story",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "template": "title",
+      "duration": 5,
+      "data": {
+        "title": "Artificial Intelligence",
+        "subtitle": "The Complete Story — From Dreams to Reality"
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.8,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "ch_origins",
+      "template": "chapter_title",
+      "duration": 3,
+      "data": {
+        "title": "The Origins",
+        "number": "1",
+        "color": "primary"
+      },
+      "animation_in": "slideInLeft",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "timeline_history",
+      "template": "timeline",
+      "duration": 10,
+      "data": {
+        "title": "Key Milestones in AI",
+        "events": [
+          { "year": "1950", "description": "Turing Test proposed" },
+          { "year": "1956", "description": "AI born at Dartmouth" },
+          { "year": "1966", "description": "ELIZA chatbot created" },
+          { "year": "1997", "description": "Deep Blue beats Kasparov" },
+          { "year": "2012", "description": "Deep learning breakthrough" },
+          { "year": "2016", "description": "AlphaGo defeats Lee Sedol" },
+          { "year": "2022", "description": "ChatGPT launched" },
+          { "year": "2024", "description": "AI agents emerge" }
+        ]
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "fact_turing",
+      "template": "fact",
+      "duration": 5,
+      "data": {
+        "number": "01",
+        "text": "Alan Turing proposed that a machine could think — decades before the technology existed to prove it",
+        "color": "primary"
+      },
+      "animation_in": "slideInLeft",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "ch_how",
+      "template": "chapter_title",
+      "duration": 3,
+      "data": {
+        "title": "How AI Works",
+        "number": "2",
+        "color": "accent"
+      },
+      "animation_in": "slideInRight",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "fact_neural",
+      "template": "fact",
+      "duration": 5,
+      "data": {
+        "number": "02",
+        "text": "Neural networks are inspired by the human brain — layers of connected nodes that learn patterns from data",
+        "color": "accent"
+      },
+      "animation_in": "slideInLeft",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "fact_training",
+      "template": "fact",
+      "duration": 5,
+      "data": {
+        "number": "03",
+        "text": "Training GPT-4 required an estimated 25,000 GPUs running for months, consuming as much electricity as 5,000 homes in a year",
+        "color": "secondary"
+      },
+      "animation_in": "slideInRight",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "stats_compute",
+      "template": "statistics",
+      "duration": 9,
+      "data": {
+        "title": "AI Computing Power Over Time",
+        "items": [
+          { "label": "1990s — Chess Engines", "value": 10, "max": 100, "unit": "TFLOPS", "color": "secondary" },
+          { "label": "2000s — ImageNet Era", "value": 25, "max": 100, "unit": "TFLOPS", "color": "secondary" },
+          { "label": "2010s — Deep Learning", "value": 55, "max": 100, "unit": "TFLOPS", "color": "primary" },
+          { "label": "2020s — Foundation Models", "value": 95, "max": 100, "unit": "TFLOPS", "color": "primary" }
+        ]
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "ch_comparison",
+      "template": "chapter_title",
+      "duration": 3,
+      "data": {
+        "title": "Old AI vs Modern AI",
+        "number": "3",
+        "color": "secondary"
+      },
+      "animation_in": "slideInLeft",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "comparison_era",
+      "template": "comparison",
+      "duration": 8,
+      "data": {
+        "left": {
+          "title": "Classic AI",
+          "subtitle": "Rule-based systems"
+        },
+        "right": {
+          "title": "Modern AI",
+          "subtitle": "Neural networks"
+        },
+        "vs_text": "VS"
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "stats_capabilities",
+      "template": "statistics",
+      "duration": 9,
+      "data": {
+        "title": "AI Capability Growth",
+        "items": [
+          { "label": "Language Understanding", "value": 92, "max": 100, "unit": "%", "color": "primary" },
+          { "label": "Image Recognition", "value": 97, "max": 100, "unit": "%", "color": "accent" },
+          { "label": "Code Generation", "value": 85, "max": 100, "unit": "%", "color": "secondary" },
+          { "label": "Creative Writing", "value": 78, "max": 100, "unit": "%", "color": "primary" },
+          { "label": "Reasoning", "value": 70, "max": 100, "unit": "%", "color": "accent" }
+        ]
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "ch_impact",
+      "template": "chapter_title",
+      "duration": 3,
+      "data": {
+        "title": "Impact on Society",
+        "number": "4",
+        "color": "accent"
+      },
+      "animation_in": "slideInRight",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "fact_jobs",
+      "template": "fact",
+      "duration": 5,
+      "data": {
+        "number": "04",
+        "text": "By 2030, AI is expected to contribute 15.7 trillion dollars to the global economy — more than the current output of China and India combined",
+        "color": "primary"
+      },
+      "animation_in": "slideInLeft",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "fact_ethics",
+      "template": "fact",
+      "duration": 5,
+      "data": {
+        "number": "05",
+        "text": "Every major tech company now has an AI ethics team — recognizing that powerful technology demands responsible development",
+        "color": "secondary"
+      },
+      "animation_in": "slideInRight",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "ranking_industries",
+      "template": "ranking",
+      "duration": 8,
+      "data": {
+        "title": "Industries Most Transformed by AI",
+        "items": [
+          { "name": "Healthcare", "detail": "Diagnostics, drug discovery" },
+          { "name": "Finance", "detail": "Trading, fraud detection" },
+          { "name": "Transportation", "detail": "Self-driving, logistics" },
+          { "name": "Education", "detail": "Personalized learning" },
+          { "name": "Entertainment", "detail": "Content creation, gaming" }
+        ]
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "ch_future",
+      "template": "chapter_title",
+      "duration": 3,
+      "data": {
+        "title": "The Future",
+        "number": "5",
+        "color": "primary"
+      },
+      "animation_in": "slideInLeft",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "fact_future",
+      "template": "fact",
+      "duration": 6,
+      "data": {
+        "number": "06",
+        "text": "We are building machines that can reason, create, and collaborate — but the most profound question remains: what does it mean to be human?",
+        "color": "primary"
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.8,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "stats_predictions",
+      "template": "statistics",
+      "duration": 7,
+      "data": {
+        "title": "AI Predictions for 2030",
+        "items": [
+          { "label": "Autonomous Vehicles", "value": 88, "max": 100, "unit": "%", "color": "primary" },
+          { "label": "AI in Surgery", "value": 75, "max": 100, "unit": "%", "color": "accent" },
+          { "label": "Automated Research", "value": 65, "max": 100, "unit": "%", "color": "secondary" },
+          { "label": "Human-AI Collaboration", "value": 92, "max": 100, "unit": "%", "color": "primary" }
+        ]
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "side_by_side_ethics",
+      "template": "side_by_side",
+      "duration": 6,
+      "data": {
+        "left": {
+          "title": "Opportunity",
+          "text": "AI can solve climate change, cure diseases, and unlock scientific breakthroughs"
+        },
+        "right": {
+          "title": "Challenge",
+          "text": "Bias, job displacement, deepfakes, and autonomous weapons demand careful governance"
+        }
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "fact_final",
+      "template": "fact",
+      "duration": 6,
+      "data": {
+        "number": "07",
+        "text": "The question is no longer whether AI will change the world — but whether we will guide that change wisely",
+        "color": "primary"
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "conclusion",
+      "template": "conclusion",
+      "duration": 6,
+      "data": {
+        "title": "The Story Continues",
+        "text": "AI is not just a technology — it is a revolution. The next chapter is being written right now, and we are all part of it."
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeIn",
+      "anim_in_duration": 0.8,
+      "anim_out_duration": 1.0
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "video": {
+    "title": "Lion vs Tiger",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "template": "title",
+      "duration": 4,
+      "data": {
+        "title": "Lion vs Tiger",
+        "subtitle": "The Ultimate Big Cat Showdown"
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "comparison",
+      "template": "comparison",
+      "duration": 6,
+      "data": {
+        "left": {
+          "title": "Lion",
+          "subtitle": "Panthera leo"
+        },
+        "right": {
+          "title": "Tiger",
+          "subtitle": "Panthera tigris"
+        },
+        "vs_text": "VS"
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "ch1",
+      "template": "chapter_title",
+      "duration": 3,
+      "data": {
+        "title": "Size & Weight",
+        "number": "1",
+        "color": "primary"
+      },
+      "animation_in": "slideInLeft",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "stats_size",
+      "template": "statistics",
+      "duration": 6,
+      "data": {
+        "title": "Physical Comparison",
+        "items": [
+          { "label": "Lion Weight", "value": 190, "max": 300, "unit": "kg", "color": "secondary" },
+          { "label": "Tiger Weight", "value": 260, "max": 300, "unit": "kg", "color": "primary" },
+          { "label": "Lion Length", "value": 250, "max": 350, "unit": "cm", "color": "secondary" },
+          { "label": "Tiger Length", "value": 310, "max": 350, "unit": "cm", "color": "primary" }
+        ]
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "ch2",
+      "template": "chapter_title",
+      "duration": 3,
+      "data": {
+        "title": "Hunting & Strength",
+        "number": "2",
+        "color": "accent"
+      },
+      "animation_in": "slideInRight",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "fact1",
+      "template": "fact",
+      "duration": 5,
+      "data": {
+        "number": "01",
+        "text": "Lions are social cats that live in groups called prides, while tigers are solitary hunters",
+        "color": "primary"
+      },
+      "animation_in": "slideInLeft",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "fact2",
+      "template": "fact",
+      "duration": 5,
+      "data": {
+        "number": "02",
+        "text": "A tiger bite force of 1050 PSI can crush bone, compared to the lion's 650 PSI",
+        "color": "secondary"
+      },
+      "animation_in": "slideInRight",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "fact3",
+      "template": "fact",
+      "duration": 5,
+      "data": {
+        "number": "03",
+        "text": "Tigers are excellent swimmers and can cross rivers, while lions generally avoid water",
+        "color": "accent"
+      },
+      "animation_in": "slideInLeft",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "stats_hunting",
+      "template": "statistics",
+      "duration": 6,
+      "data": {
+        "title": "Hunting Ability",
+        "items": [
+          { "label": "Lion Speed", "value": 80, "max": 100, "unit": "%", "color": "secondary" },
+          { "label": "Tiger Speed", "value": 85, "max": 100, "unit": "%", "color": "primary" },
+          { "label": "Lion Agility", "value": 70, "max": 100, "unit": "%", "color": "secondary" },
+          { "label": "Tiger Agility", "value": 90, "max": 100, "unit": "%", "color": "primary" },
+          { "label": "Lion Stamina", "value": 75, "max": 100, "unit": "%", "color": "secondary" },
+          { "label": "Tiger Stamina", "value": 65, "max": 100, "unit": "%", "color": "primary" }
+        ]
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "ranking",
+      "template": "ranking",
+      "duration": 5,
+      "data": {
+        "title": "Overall Power Ranking",
+        "items": [
+          { "name": "Tiger", "detail": "92/100" },
+          { "name": "Lion", "detail": "88/100" }
+        ]
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeOut",
+      "anim_in_duration": 0.5,
+      "anim_out_duration": 0.5
+    },
+    {
+      "id": "conclusion",
+      "template": "conclusion",
+      "duration": 5,
+      "data": {
+        "title": "The Verdict",
+        "text": "Both are magnificent predators. The tiger edges ahead in raw power, but the lion rules the savanna with pride and teamwork."
+      },
+      "animation_in": "fadeIn",
+      "animation_out": "fadeIn",
+      "anim_in_duration": 0.8,
+      "anim_out_duration": 0.5
+    }
+  ]
+}

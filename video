@@ -1,0 +1,179 @@
+#!/bin/bash
+# AI Video Generator - Main entry point
+# Usage: ./video "topic" [--duration 60] [--output output/video.mp4]
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$SCRIPT_DIR"
+
+# Parse arguments
+TOPIC=""
+DURATION=60
+OUTPUT=""
+SCENE_FILE=""
+CONFIG_FILE=""
+VALIDATE_ONLY=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --duration|-d)
+            DURATION="$2"
+            shift 2
+            ;;
+        --output|-o)
+            OUTPUT="$2"
+            shift 2
+            ;;
+        --config|-c)
+            CONFIG_FILE="$2"
+            shift 2
+            ;;
+        --scene-file|-s)
+            SCENE_FILE="$2"
+            shift 2
+            ;;
+        --validate)
+            VALIDATE_ONLY=true
+            shift
+            ;;
+        --help|-h)
+            echo "AI Video Generator"
+            echo ""
+            echo "Usage:"
+            echo "  ./video \"Lion vs Tiger\"              Generate video from topic"
+            echo "  ./video --scene-file scenes.json     Render existing scene file"
+            echo "  ./video --validate scenes.json       Validate scene file only"
+            echo "  ./video --help                       Show this help"
+            echo ""
+            echo "Options:"
+            echo "  --duration, -d <seconds>   Target video duration (default: 60)"
+            echo "  --output, -o <path>        Output MP4 path"
+            echo "  --config, -c <path>        Config file path"
+            echo "  --scene-file, -s <path>    Render existing scene JSON"
+            echo "  --validate                 Validate scene JSON only"
+            echo ""
+            echo "Examples:"
+            echo "  ./video \"Lion vs Tiger\""
+            echo "  ./video \"History of Python\" --duration 30"
+            echo "  ./video --scene-file scenes/lion-vs-tiger.json"
+            exit 0
+            ;;
+        *)
+            if [[ -z "$TOPIC" ]]; then
+                TOPIC="$1"
+            fi
+            shift
+            ;;
+    esac
+done
+
+# Check dependencies
+echo "=== AI Video Generator ==="
+echo ""
+
+MISSING_DEPS=0
+
+check_dep() {
+    if command -v "$1" &>/dev/null; then
+        echo "[OK] $1"
+    else
+        echo "[MISSING] $1 - $2"
+        MISSING_DEPS=1
+    fi
+}
+
+echo "Checking dependencies:"
+check_dep python3 "Required for rendering"
+check_dep ffmpeg "Required for video encoding"
+check_dep node "Optional, for advanced features"
+echo ""
+
+# Check Python modules
+echo "Checking Python modules:"
+python3 -c "from PIL import Image, ImageDraw, ImageFont; print('[OK] Pillow')" 2>/dev/null || { echo "[MISSING] Pillow - install with: pip install Pillow"; MISSING_DEPS=1; }
+echo ""
+
+if [[ $MISSING_DEPS -eq 1 ]]; then
+    echo "Some dependencies are missing. Attempting to install..."
+    pip3 install Pillow 2>/dev/null || true
+fi
+
+echo "Starting pipeline..."
+echo ""
+
+# If a pre-existing scene file is provided, skip generation
+if [[ -n "$SCENE_FILE" ]]; then
+    if [[ ! -f "$SCENE_FILE" ]]; then
+        echo "Error: Scene file not found: $SCENE_FILE"
+        exit 1
+    fi
+    echo "Using existing scene file: $SCENE_FILE"
+
+    if [[ "$VALIDATE_ONLY" == true ]]; then
+        python3 "$PROJECT_DIR/renderer/validate.py" "$SCENE_FILE"
+        exit $?
+    fi
+
+    if [[ -z "$OUTPUT" ]]; then
+        TITLE=$(python3 -c "
+import json
+with open('$SCENE_FILE') as f:
+    d = json.load(f)
+print(d.get('video',{}).get('title','output'))
+" 2>/dev/null || echo "output")
+        SLUG=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
+        OUTPUT="$PROJECT_DIR/output/${SLUG}.mp4"
+    fi
+
+    mkdir -p "$(dirname "$OUTPUT")"
+    python3 "$PROJECT_DIR/renderer/renderer.py" "$SCENE_FILE" -o "$OUTPUT" ${CONFIG_FILE:+-c "$CONFIG_FILE"}
+    exit $?
+fi
+
+# Validate topic is provided
+if [[ -z "$TOPIC" ]]; then
+    echo "Error: Please provide a topic or a scene file."
+    echo "Usage: ./video \"Your Topic Here\""
+    echo "       ./video --scene-file scenes/my-scene.json"
+    exit 1
+fi
+
+echo "Topic: $TOPIC"
+echo "Duration: ${DURATION}s"
+echo ""
+
+# Step 1: Generate script
+SCENES_DIR="$PROJECT_DIR/scenes"
+mkdir -p "$SCENES_DIR"
+
+SLUG=$(echo "$TOPIC" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
+SCENE_FILE="$SCENES_DIR/${SLUG}.json"
+
+if [[ -f "$SCENE_FILE" ]]; then
+    echo "Using existing scene file: $SCENE_FILE"
+else
+    echo "Step 1: Generating script..."
+    python3 "$PROJECT_DIR/scripts/script_generator.py" "$TOPIC" --duration "$DURATION" --output "$SCENE_FILE"
+    echo "Scene JSON saved to: $SCENE_FILE"
+    echo ""
+fi
+
+# Step 2: Validate
+echo "Step 2: Validating scene JSON..."
+python3 "$PROJECT_DIR/renderer/validate.py" "$SCENE_FILE"
+echo ""
+
+# Step 3: Render
+echo "Step 3: Rendering video..."
+if [[ -z "$OUTPUT" ]]; then
+    OUTPUT="$PROJECT_DIR/output/${SLUG}.mp4"
+fi
+mkdir -p "$(dirname "$OUTPUT")"
+
+python3 "$PROJECT_DIR/renderer/renderer.py" "$SCENE_FILE" -o "$OUTPUT" ${CONFIG_FILE:+-c "$CONFIG_FILE"}
+
+echo ""
+echo "=== Complete ==="
+echo "Output: $OUTPUT"
+ls -lh "$OUTPUT" 2>/dev/null
