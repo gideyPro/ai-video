@@ -5,7 +5,7 @@ import os
 import asyncio
 import tempfile
 import subprocess
-from pydub import AudioSegment
+
 
 try:
     import edge_tts
@@ -58,9 +58,34 @@ def extract_text_from_scene(scene):
 
     return [t.strip() for t in texts if t and t.strip()]
 
-async def generate_tts(text, output_file, voice="en-US-AriaNeural"):
-    communicate = edge_tts.Communicate(text, voice)
-    await communicate.save(output_file)
+async def generate_tts(text, output_file, voice="am"):
+    from gtts import gTTS
+    tts = gTTS(text, lang='am')
+    tts.save(output_file)
+
+
+def get_duration(audio_file):
+    if not os.path.exists(audio_file): return 0
+    cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", audio_file]
+    try:
+        return float(subprocess.check_output(cmd).decode().strip())
+    except:
+        return 0
+
+def pad_and_concat(audio_files, target_durations, output_file):
+    list_file = os.path.join(os.path.dirname(output_file), "concat.txt")
+    with open(list_file, "w") as f:
+        for audio, dur in zip(audio_files, target_durations):
+            if audio and os.path.exists(audio):
+                f.write(f"file '{audio}'\n")
+            else:
+                # generate silence
+                silent = os.path.join(os.path.dirname(output_file), f"silence_{dur}.mp3")
+                if not os.path.exists(silent):
+                    subprocess.run(["ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo", "-t", str(dur), silent], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                f.write(f"file '{silent}'\n")
+                
+    subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", list_file, "-c", "copy", output_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 async def main():
     if len(sys.argv) < 3:
@@ -82,14 +107,28 @@ async def main():
         data = json.load(f)
 
     scenes = data.get("scenes", [])
-
     tmpdir = tempfile.mkdtemp(prefix="video_tts_")
-    final_audio = AudioSegment.empty()
     updated_scenes = False
+    
+    audio_files = []
+    target_durations = []
 
     for i, scene in enumerate(scenes):
         extracted = extract_text_from_scene(scene)
         scene_text = "... ".join(extracted)
+        
+        # ADD EXTRACTION FOR NEW TEMPLATES
+        template = scene.get("template", "")
+        if template == "quote":
+            scene_text = scene.get("data", {}).get("text", "") + " ... " + scene.get("data", {}).get("author", "")
+        elif template == "news_flash":
+            scene_text = scene.get("data", {}).get("headline", "") + " ... " + scene.get("data", {}).get("subtext", "")
+        elif template == "split_three":
+            scene_text = scene.get("data", {}).get("title", "") + " ... " + ", ".join(scene.get("data", {}).get("items", []))
+        elif template == "map_marker":
+            scene_text = "Location: " + scene.get("data", {}).get("label", "")
+        elif template == "code_snippet":
+            scene_text = "Code snippet: " + scene.get("data", {}).get("title", "")
 
         target_duration_s = scene.get("duration", 5)
 
@@ -97,41 +136,32 @@ async def main():
             tmp_mp3 = os.path.join(tmpdir, f"scene_{i}.mp3")
             await generate_tts(scene_text, tmp_mp3, voice)
 
-            # Load with pydub to get exact duration
-            audio_segment = AudioSegment.from_mp3(tmp_mp3)
-            audio_duration_s = len(audio_segment) / 1000.0
+            audio_duration_s = get_duration(tmp_mp3)
 
-            # If audio is longer than visual scene duration, we must extend visual scene
-            # We add a small buffer (0.5s) to let the voice finish naturally
             if audio_duration_s + 0.5 > target_duration_s:
                 target_duration_s = round(audio_duration_s + 0.5, 1)
                 scene["duration"] = target_duration_s
                 updated_scenes = True
 
-            # Pad audio to exact target duration (so visuals and audio match perfectly)
-            target_duration_ms = int(target_duration_s * 1000)
-            padding_ms = target_duration_ms - len(audio_segment)
-            if padding_ms > 0:
-                silence = AudioSegment.silent(duration=padding_ms)
-                audio_segment = audio_segment + silence
-
-            final_audio += audio_segment
+            padded_mp3 = os.path.join(tmpdir, f"scene_{i}_padded.mp3")
+            subprocess.run(["ffmpeg", "-y", "-i", tmp_mp3, "-af", f"apad,atrim=0:{target_duration_s}", padded_mp3], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            
+            audio_files.append(padded_mp3)
+            target_durations.append(target_duration_s)
         else:
-            # No text, just add silence for the duration
-            silence = AudioSegment.silent(duration=int(target_duration_s * 1000))
-            final_audio += silence
+            audio_files.append(None)
+            target_durations.append(target_duration_s)
 
     if updated_scenes:
         print("Audio was longer than some scenes. Updating scene durations in JSON...")
         with open(scene_file, "w") as f:
             json.dump(data, f, indent=2)
 
-    final_audio.export(output_file, format="mp3")
+    pad_and_concat(audio_files, target_durations, output_file)
     print(f"Saved perfectly timed audio to {output_file}")
 
-    # Clean up temporary directory
     import shutil
     shutil.rmtree(tmpdir)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     asyncio.run(main())

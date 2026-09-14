@@ -201,93 +201,51 @@ def generate_script(topic, duration=60, config=None, output_path=None):
 
 
 def generate_fallback_script(topic, duration=60, config=None):
-    """Generate a deterministic fallback script when AI is unavailable."""
     if config is None:
         config = load_config()
     width = config.get("resolution", {}).get("width", 1920)
     height = config.get("resolution", {}).get("height", 1080)
 
-    words = topic.split()
-    is_vs = any(w.lower() == "vs" for w in words)
-    clean_topic = topic.replace("vs", "versus").strip()
-
-    if is_vs:
-        parts = topic.split("vs")
-        left_name = parts[0].strip() if len(parts) > 0 else "Option A"
-        right_name = parts[1].strip() if len(parts) > 1 else "Option B"
-        scenes = [
-            {"id": "intro", "template": "title", "duration": 4,
-             "data": {"title": clean_topic, "subtitle": "Which is better?"},
-             "animation_in": "fadeIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "comparison", "template": "comparison", "duration": 6,
-             "data": {"left": {"title": left_name}, "right": {"title": right_name}, "vs_text": "VS"},
-             "animation_in": "fadeIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "ch1", "template": "chapter_title", "duration": 3,
-             "data": {"title": "Key Differences", "number": "1"},
-             "animation_in": "slideInLeft", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "fact1", "template": "fact", "duration": 5,
-             "data": {"number": "01", "text": f"Both {left_name} and {right_name} are remarkable in their own ways"},
-             "animation_in": "slideInLeft", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "stats", "template": "statistics", "duration": 6,
-             "data": {"title": "Comparison Stats",
-                      "items": [
-                          {"label": f"{left_name} Power", "value": 85, "max": 100, "unit": "%", "color": "secondary"},
-                          {"label": f"{right_name} Power", "value": 90, "max": 100, "unit": "%", "color": "primary"},
-                          {"label": f"{left_name} Speed", "value": 80, "max": 100, "unit": "%", "color": "secondary"},
-                          {"label": f"{right_name} Speed", "value": 75, "max": 100, "unit": "%", "color": "primary"}
-                      ]},
-             "animation_in": "fadeIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "fact2", "template": "fact", "duration": 5,
-             "data": {"number": "02", "text": f"The {left_name} is known for its strength and courage"},
-             "animation_in": "slideInRight", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "fact3", "template": "fact", "duration": 5,
-             "data": {"number": "03", "text": f"The {right_name} is celebrated for its agility and hunting skills"},
-             "animation_in": "slideInLeft", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "ranking", "template": "ranking", "duration": 5,
-             "data": {"title": "Overall Ranking",
-                      "items": [
-                          {"name": right_name, "detail": "90/100"},
-                          {"name": left_name, "detail": "88/100"}
-                      ]},
-             "animation_in": "fadeIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "conclusion", "template": "conclusion", "duration": 5,
-             "data": {"title": "The Verdict", "text": f"Both are incredible creatures. The winner depends on what you value most.",
-                      },
-             "animation_in": "fadeIn", "animation_out": "fadeIn", "anim_in_duration": 0.8, "anim_out_duration": 0.5}
-        ]
-    else:
-        scenes = [
-            {"id": "intro", "template": "title", "duration": 4,
-             "data": {"title": clean_topic.title(), "subtitle": "Everything you need to know"},
-             "animation_in": "fadeIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "ch1", "template": "chapter_title", "duration": 3,
-             "data": {"title": "Introduction", "number": "1"},
-             "animation_in": "slideInLeft", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "fact1", "template": "fact", "duration": 5,
-             "data": {"number": "01", "text": f"Let's explore the fascinating world of {clean_topic}"},
-             "animation_in": "slideInLeft", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "ch2", "template": "chapter_title", "duration": 3,
-             "data": {"title": "Key Facts", "number": "2"},
-             "animation_in": "slideInRight", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "fact2", "template": "fact", "duration": 5,
-             "data": {"number": "02", "text": f"There is so much to discover about {clean_topic}"},
-             "animation_in": "slideUp", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "stats", "template": "statistics", "duration": 6,
-             "data": {"title": "Key Metrics",
-                      "items": [
-                          {"label": "Importance", "value": 95, "max": 100, "unit": "%", "color": "primary"},
-                          {"label": "Complexity", "value": 78, "max": 100, "unit": "%", "color": "secondary"},
-                          {"label": "Interest", "value": 88, "max": 100, "unit": "%", "color": "accent"}
-                      ]},
-             "animation_in": "fadeIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "fact3", "template": "fact", "duration": 5,
-             "data": {"number": "03", "text": f"The story of {clean_topic} continues to evolve"},
-             "animation_in": "slideInLeft", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
-            {"id": "conclusion", "template": "conclusion", "duration": 5,
-             "data": {"title": "Summary", "text": f"That's everything about {clean_topic}!",
-                      },
-             "animation_in": "fadeIn", "animation_out": "fadeIn", "anim_in_duration": 0.8, "anim_out_duration": 0.5}
-        ]
+    clean_topic = topic.strip()
+    
+    scenes = [
+        {"id": "intro_search", "template": "search_typing", "duration": 4,
+         "data": {"query": clean_topic},
+         "animation_in": "fadeIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
+         
+        {"id": "intro_title", "template": "title", "duration": 4,
+         "data": {"title": clean_topic.title(), "subtitle": "Everything you need to know"},
+         "animation_in": "zoomIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
+         
+        {"id": "expert", "template": "lower_third", "duration": 3,
+         "data": {"name": "AI Studio", "title": "Automated Researcher"},
+         "animation_in": "slideInLeft", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
+         
+        {"id": "cap1", "template": "dynamic_captions", "duration": 5,
+         "data": {"text": f"Let's explore the fascinating world of {clean_topic} today."},
+         "animation_in": "fadeIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
+         
+        {"id": "tweet1", "template": "social_post", "duration": 5,
+         "data": {"username": "Expert", "handle": "@expert", "text": f"Did you know {clean_topic} is completely changing the game?", "likes": "12.4K"},
+         "animation_in": "zoomIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
+         
+        {"id": "stats", "template": "statistics", "duration": 5,
+         "data": {"title": "Key Metrics",
+                  "items": [
+                      {"label": "Importance", "value": 95, "max": 100, "unit": "%"},
+                      {"label": "Complexity", "value": 78, "max": 100, "unit": "%"},
+                      {"label": "Interest", "value": 88, "max": 100, "unit": "%"}
+                  ]},
+         "animation_in": "fadeIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
+         
+        {"id": "cap2", "template": "dynamic_captions", "duration": 5,
+         "data": {"text": "Make sure you stay updated as the story continues to evolve!"},
+         "animation_in": "fadeIn", "animation_out": "fadeOut", "anim_in_duration": 0.5, "anim_out_duration": 0.5},
+         
+        {"id": "outro_cta", "template": "call_to_action", "duration": 4,
+         "data": {"text": "SUBSCRIBE"},
+         "animation_in": "zoomIn", "animation_out": "fadeIn", "anim_in_duration": 0.8, "anim_out_duration": 0.5}
+    ]
 
     scene_data = {
         "video": {
